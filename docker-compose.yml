@@ -2,12 +2,14 @@ version: '3.9'
 
 services:
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    build:
+      context: ./db
     ports:
       - 1433:1433
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=mssql1Ipw
+    command: sh -c "sleep 20s && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P mssql1Ipw -i init.sql & /opt/mssql/bin/sqlservr"
   server:
     image: node:latest
     working_dir: /app/server
@@ -15,6 +17,6 @@ services:
       - 8080:8080
     volumes:
       - ./server:/app/server
-    command: sh -c "sleep 5s && npm install && npm run dev"
+    command: sh -c "sleep 25s && npm install && npm run dev"
     depends_on:
       - mssql
