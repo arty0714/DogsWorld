@@ -20,16 +20,18 @@ export function proccessQuery(req, res, next) {
 		result.order = [[ key, order ]];
 	}
 
-	if (hasKey(query, 'pageNumber')
-		&& parseInt(query.pageNumber) !== 'NaN') {
-		result.offset = parseInt(query.pageNumber);
-	}
-
 	if (hasKey(query, 'limit')
 		&& parseInt(query.limit) !== 'NaN') {
 		result.limit = parseInt(query.limit);
 	}
 
+	if (hasKey(query, 'pageNumber')
+		&& parseInt(query.pageNumber) !== 'NaN') {
+		const multiplier = result.limit || 1;
+		result.offset = parseInt(query.pageNumber) * multiplier;
+	}
+
+	console.log(query, result)
 	req.body.params = result;
 	next();
 }
